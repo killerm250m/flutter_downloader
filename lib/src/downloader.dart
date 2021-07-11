@@ -99,76 +99,8 @@ class FlutterDownloader {
     }
   }
 
-  ///
-  /// Load all tasks from Sqlite database
-  ///
-  /// **return:**
-  ///
-  /// A list of [DownloadTask] objects
-  ///
-  static Future<List<DownloadTask>?> loadTasks() async {
-    assert(_initialized, 'FlutterDownloader.initialize() must be called first');
-
-    try {
-      List<dynamic> result = await _channel.invokeMethod('loadTasks');
-      return result
-          .map((item) => new DownloadTask(
-              taskId: item['task_id'],
-              status: DownloadTaskStatus(item['status']),
-              progress: item['progress'],
-              url: item['url'],
-              filename: item['file_name'],
-              savedDir: item['saved_dir'],
-              timeCreated: item['time_created']))
-          .toList();
-    } on PlatformException catch (e) {
-      print(e.message);
-      return null;
-    }
-  }
 
   ///
-  /// Load tasks from Sqlite database with SQL statements
-  ///
-  /// **parameters:**
-  ///
-  /// * `query`: SQL statement. Note that the plugin will parse loaded data from
-  /// database into [DownloadTask] object, in order to make it work, you should
-  /// load tasks with all fields from database. In other words, using `SELECT *`
-  /// statement.
-  ///
-  /// **return:**
-  ///
-  /// A list of [DownloadTask] objects
-  ///
-  /// **example:**
-  ///
-  /// ```dart
-  /// FlutterDownloader.loadTasksWithRawQuery(query: 'SELECT * FROM task WHERE status=3');
-  /// ```
-  ///
-  static Future<List<DownloadTask>?> loadTasksWithRawQuery(
-      {required String query}) async {
-    assert(_initialized, 'FlutterDownloader.initialize() must be called first');
-
-    try {
-      List<dynamic> result = await _channel
-          .invokeMethod('loadTasksWithRawQuery', {'query': query});
-      return result
-          .map((item) => new DownloadTask(
-              taskId: item['task_id'],
-              status: DownloadTaskStatus(item['status']),
-              progress: item['progress'],
-              url: item['url'],
-              filename: item['file_name'],
-              savedDir: item['saved_dir'],
-              timeCreated: item['time_created']))
-          .toList();
-    } on PlatformException catch (e) {
-      print(e.message);
-      return null;
-    }
-  }
 
   ///
   /// Cancel a given download task
